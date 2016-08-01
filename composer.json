@@ -1,0 +1,16 @@
+{
+    "name":        "dialtime/common",
+    "homepage":    "http://dialtime.target-call.ru",
+    "description": "Dialtime Common Bundle",
+    "type":        "symfony-bundle",
+    "version":     "0.1.0",
+    "license":     "SEULA",
+    "authors":     [ { "name": "Alexander Mosyagin", "email": "fixnim@gmail.com", "role": "Developer" } ],
+    "autoload":    { "psr-4": { "Polonairs\\Dialtime\\CommonBundle\\": "" } },
+    "require":
+    {
+        "dialtime/dialtime": "0.1.0",
+        "dialtime/model": "0.1.0",
+        "polonair/smsi": "0.1.0"
+    }
+}

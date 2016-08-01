@@ -1,0 +1,3 @@
+[submodule "Resources/doc"]
+	path = Resources/doc
+	url = git@github.com:polonair/dialtime-common.wiki.git
