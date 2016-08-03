@@ -36,7 +36,7 @@ class CalliopeTemplateLoader implements \Twig_LoaderInterface
     }
     protected function getValue($name)
     {
-        if ($t = $this->doctrine->getRepository("CommonBundle:Template")->loadOneByName($name))
+        if ($t = $this->doctrine->getRepository("ModelBundle:Template")->loadOneByName($name))
         {
             return $this->template = $t;
         }

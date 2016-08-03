@@ -6,14 +6,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
-use Polonairs\Dialtime\CommonBundle\Entity\User;
-use Polonairs\Dialtime\CommonBundle\Entity\Master;
-use Polonairs\Dialtime\CommonBundle\Entity\Partner;
-use Polonairs\Dialtime\CommonBundle\Entity\Phone;
-use Polonairs\Dialtime\CommonBundle\Entity\Account;
-use Polonairs\Dialtime\CommonBundle\Entity\Auth;	
-use Polonairs\Dialtime\CommonBundle\Entity\Schedule;
-use Polonairs\Dialtime\CommonBundle\Entity\Interval;				
+use Polonairs\Dialtime\ModelBundle\Entity\User;
+use Polonairs\Dialtime\ModelBundle\Entity\Master;
+use Polonairs\Dialtime\ModelBundle\Entity\Partner;
+use Polonairs\Dialtime\ModelBundle\Entity\Phone;
+use Polonairs\Dialtime\ModelBundle\Entity\Account;
+use Polonairs\Dialtime\ModelBundle\Entity\Auth;	
+use Polonairs\Dialtime\ModelBundle\Entity\Schedule;
+use Polonairs\Dialtime\ModelBundle\Entity\Interval;				
 
 class UserService extends DefaultAuthenticationSuccessHandler
 {
@@ -51,7 +51,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 	{
 		$em = $this->doctrine->getManager();
 
-		$roles = $em->getRepository("CommonBundle:User")->loadUserRoles($username);
+		$roles = $em->getRepository("ModelBundle:User")->loadUserRoles($username);
 
 		if (count($roles) === 0)
 		{
@@ -109,7 +109,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 	{
 		$em = $this->doctrine->getManager();
 
-		$roles = $em->getRepository("CommonBundle:User")->loadUserRoles($username);
+		$roles = $em->getRepository("ModelBundle:User")->loadUserRoles($username);
 
 		if (count($roles) === 0)
 		{
@@ -156,7 +156,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
         if ($user->getUser()->getState() === User::STATE_JUST_REGISTERED) 
         {
 			$user->setState(User::STATE_ACTIVE);
-			$phones = $em->getRepository("CommonBundle:Phone")->loadByOwner($user);
+			$phones = $em->getRepository("ModelBundle:Phone")->loadByOwner($user);
 			$phones[0]->setMain(true)->setConfirmed(true);
 			$em->persist($user)->persist($phones[0]);
         }

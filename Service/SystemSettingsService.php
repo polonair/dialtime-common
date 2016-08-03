@@ -14,7 +14,7 @@ class SystemSettingsService
 	}
 	public function get($parameterName, $default = null)
 	{
-		$p = $this->doctrine->getManager()->getRepository("CommonBundle:Parameter")->loadValue($parameterName);
+		$p = $this->doctrine->getManager()->getRepository("ModelBundle:Parameter")->loadValue($parameterName);
 		return ($p === null)?($default):$p;
 	}
 }
