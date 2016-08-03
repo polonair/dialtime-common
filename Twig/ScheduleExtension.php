@@ -2,7 +2,7 @@
 
 namespace Polonairs\Dialtime\CommonBundle\Twig;
 
-use Polonairs\Dialtime\CommonBundle\Entity\Schedule;
+use Polonairs\Dialtime\ModelBundle\Entity\Schedule;
 
 class ScheduleExtension extends \Twig_Extension
 {
