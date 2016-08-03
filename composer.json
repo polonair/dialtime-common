@@ -10,7 +10,7 @@
     "require":
     {
         "dialtime/dialtime": "0.1.0",
-        "dialtime/model": "0.1.0",
+        "dialtime/model": "0.1.1",
         "polonair/smsi": "0.1.0"
     }
 }
