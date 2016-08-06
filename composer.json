@@ -9,8 +9,8 @@
     "autoload":    { "psr-4": { "Polonairs\\Dialtime\\CommonBundle\\": "" } },
     "require":
     {
-        "dialtime/dialtime": "0.1.0",
-        "dialtime/model": "0.1.1",
-        "polonair/smsi": "0.1.0"
+        "dialtime/dialtime": "0.1.1",
+        "dialtime/model": "0.1.2",
+        "polonair/smsi": "0.1.1"
     }
 }
