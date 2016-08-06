@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="dialtime.common.user" class="Polonairs\Dialtime\CommonBundle\Service\UserService\UserService">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="security.password_encoder" />
+        </service>
+        <service id="dialtime.common.settings" class="Polonairs\Dialtime\CommonBundle\Service\SystemSettingsService">
+            <argument type="service" id="doctrine" />
+        </service>
+        <service id="dialtime.common.schedule_extension" class="Polonairs\Dialtime\CommonBundle\Twig\ScheduleExtension">
+            <tag name="twig.extension" />
+        </service>
+    </services>
+</container>
