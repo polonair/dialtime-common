@@ -5,6 +5,7 @@ namespace Polonairs\Dialtime\CommonBundle\Service\UserService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
+use Symfony\Component\Security\Http\HttpUtils;
 use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
 use Polonairs\Dialtime\ModelBundle\Entity\User;
 use Polonairs\Dialtime\ModelBundle\Entity\Master;
@@ -19,11 +20,13 @@ class UserService extends DefaultAuthenticationSuccessHandler
 {
 	private $doctrine = null;
 	private $encoder = null;
+	protected $httpUtils = null;
 
-	public function __construct(Doctrine $doctrine, $encoder)
+	public function __construct(Doctrine $doctrine, $encoder, HttpUtils $httpUtils)
 	{
 		$this->doctrine = $doctrine;
 		$this->encoder = $encoder;
+		$this->httpUtils = $httpUtils; 
 	}
 	public static function normalizeLogin($username)
 	{
@@ -69,6 +72,11 @@ class UserService extends DefaultAuthenticationSuccessHandler
 				->setCurrency(Account::CURRENCY_RUR)
 				->setOwner($user)
 				->setState(Account::STATE_ACTIVE);
+			$rate = (new Account())
+				->setBalance(0)
+				->setCurrency(Account::CURRENCY_TCR)
+				->setOwner($user)
+				->setState(Account::STATE_ACTIVE);
 	        $encoded = $this->encoder->encodePassword($master, $password);
     		$schedule = (new Schedule())
     			->setOwner($user)
@@ -83,6 +91,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
     		}
 			$user
 				->setMainAccount($account)
+				->setRateAccount($rate)
 				->setPassword($encoded)
 				->setMainSchedule($schedule);
 			$auth = (new Auth())
@@ -152,13 +161,18 @@ class UserService extends DefaultAuthenticationSuccessHandler
 	}
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
+    	$user = $token->getUser();
+
 		$em = $this->doctrine->getManager();
         if ($user->getUser()->getState() === User::STATE_JUST_REGISTERED) 
         {
-			$user->setState(User::STATE_ACTIVE);
-			$phones = $em->getRepository("ModelBundle:Phone")->loadByOwner($user);
+			$user->getUser()->setState(User::STATE_ACTIVE);
+			$phones = $em->getRepository("ModelBundle:Phone")->loadByOwner($user->getUser());
 			$phones[0]->setMain(true)->setConfirmed(true);
-			$em->persist($user)->persist($phones[0]);
+			dump($phones);
+			$em->persist($user->getUser());
+			
+			$em->persist($phones[0]);
         }
         $em->persist(
         	(new Auth())
