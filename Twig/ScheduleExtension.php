@@ -117,6 +117,21 @@ class ScheduleExtension extends \Twig_Extension
     	}
     	$result = substr($result, 0, -1);
 
+        switch($schedule->getTimezone())
+        {
+            case 120: $result .= " (MSK-1)"; break;
+            case 180: $result .= " (MSK)"; break;
+            case 240: $result .= " (MSK+1)"; break;
+            case 300: $result .= " (MSK+2)"; break;
+            case 360: $result .= " (MSK+3)"; break;
+            case 420: $result .= " (MSK+4)"; break;
+            case 480: $result .= " (MSK+5)"; break;
+            case 540: $result .= " (MSK+6)"; break;
+            case 600: $result .= " (MSK+7)"; break;
+            case 660: $result .= " (MSK+8)"; break;
+            case 720: $result .= " (MSK+9)"; break;
+        }
+
     	return $result;
     }
     private function eq($a, $b)
