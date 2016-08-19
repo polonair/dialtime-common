@@ -104,6 +104,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$em->persist($master);
 			$em->persist($phone);
 			$em->persist($account);
+			$em->persist($rate);
 
 			$em->flush();
 			$em->getConnection()->commit();
@@ -169,7 +170,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$user->getUser()->setState(User::STATE_ACTIVE);
 			$phones = $em->getRepository("ModelBundle:Phone")->loadByOwner($user->getUser());
 			$phones[0]->setMain(true)->setConfirmed(true);
-			dump($phones);
+			//dump($phones);
 			$em->persist($user->getUser());
 			
 			$em->persist($phones[0]);
