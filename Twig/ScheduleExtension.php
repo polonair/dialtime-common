@@ -138,7 +138,7 @@ class ScheduleExtension extends \Twig_Extension
     {
     	if (count($a)!=count($b)) return false;
     	if (count($a)==0) return false;
-    	for($i = 0; $i < count($a); $i++)
+    	foreach($a as $i => $v)
     	{
     		if ($a[$i]["from"] != $b[$i]["from"] || $a[$i]["to"] != $b[$i]["to"]) 
     			return false;
