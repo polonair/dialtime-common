@@ -169,11 +169,13 @@ class UserService extends DefaultAuthenticationSuccessHandler
         {
 			$user->getUser()->setState(User::STATE_ACTIVE);
 			$phones = $em->getRepository("ModelBundle:Phone")->loadByOwner($user->getUser());
-			$phones[0]->setMain(true)->setConfirmed(true);
-			//dump($phones);
-			$em->persist($user->getUser());
-			
-			$em->persist($phones[0]);
+			if (count($phones) > 0)
+			{
+				$phones[0]->setMain(true)->setConfirmed(true);
+				//dump($phones);
+				$em->persist($user->getUser());				
+				$em->persist($phones[0]);
+			}
         }
         $em->persist(
         	(new Auth())
