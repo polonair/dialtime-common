@@ -14,7 +14,9 @@ use Polonairs\Dialtime\ModelBundle\Entity\Phone;
 use Polonairs\Dialtime\ModelBundle\Entity\Account;
 use Polonairs\Dialtime\ModelBundle\Entity\Auth;	
 use Polonairs\Dialtime\ModelBundle\Entity\Schedule;
-use Polonairs\Dialtime\ModelBundle\Entity\Interval;				
+use Polonairs\Dialtime\ModelBundle\Entity\Interval;		
+use Polonairs\Dialtime\ModelBundle\Entity\Transaction;				
+use Polonairs\Dialtime\ModelBundle\Entity\TransactionEntry;				
 
 class UserService extends DefaultAuthenticationSuccessHandler
 {
@@ -137,9 +139,15 @@ class UserService extends DefaultAuthenticationSuccessHandler
 				->setCurrency(Account::CURRENCY_RUR)
 				->setOwner($user)
 				->setState(Account::STATE_ACTIVE);
+			$rate = (new Account())
+				->setBalance(0)
+				->setCurrency(Account::CURRENCY_TCR)
+				->setOwner($user)
+				->setState(Account::STATE_ACTIVE);
 	        $encoded = $this->encoder->encodePassword($partner, $password);
 			$user
 				->setMainAccount($account)
+				->setRateAccount($rate)
 				->setPassword($encoded);
 			$auth = (new Auth())
 				->setType(Auth::TYPE_REGISTRATION)
@@ -165,6 +173,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
     	$user = $token->getUser();
 
 		$em = $this->doctrine->getManager();
+		$transaction = null;
         if ($user->getUser()->getState() === User::STATE_JUST_REGISTERED) 
         {
 			$user->getUser()->setState(User::STATE_ACTIVE);
@@ -176,6 +185,18 @@ class UserService extends DefaultAuthenticationSuccessHandler
 				$em->persist($user->getUser());				
 				$em->persist($phones[0]);
 			}
+			$transaction = (new Transaction())->setEvent(Transaction::EVENT_BONUS);
+			$em->persist($transaction);
+			$macc = $user->getUser()->getRateAccount();
+			$sacc = $em->getRepository("ModelBundle:Account")->findOneByName("SYSTEM_TCR");
+
+			$entry_m = (new TransactionEntry())
+	            ->setTransaction($transaction)
+	            ->setFrom($sacc)
+	            ->setTo($macc)
+	            ->setRole(TransactionEntry::ROLE_SELLER)
+	            ->setAmount(100.0);
+	        $em->persist($entry_m);
         }
         $em->persist(
         	(new Auth())
@@ -183,6 +204,11 @@ class UserService extends DefaultAuthenticationSuccessHandler
         	->setUser($user->getUser())
         	->setIp($request->getClientIp()));
         $em->flush();
+        if ($transaction !== null)
+        {
+	        $em->getRepository("ModelBundle:Transaction")->doHold($transaction);
+	        $em->getRepository("ModelBundle:Transaction")->doApply($transaction);
+	    }
         return $this->httpUtils->createRedirectResponse($request, $this->determineTargetUrl($request));
 	}
 }
