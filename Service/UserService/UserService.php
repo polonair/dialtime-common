@@ -158,6 +158,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$em->persist($partner);
 			$em->persist($phone);
 			$em->persist($account);
+			$em->persist($rate);
 
 			$em->flush();
 			$em->getConnection()->commit();
