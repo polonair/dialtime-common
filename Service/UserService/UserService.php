@@ -10,6 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
 use Polonairs\Dialtime\ModelBundle\Entity\User;
 use Polonairs\Dialtime\ModelBundle\Entity\Master;
 use Polonairs\Dialtime\ModelBundle\Entity\Partner;
+use Polonairs\Dialtime\ModelBundle\Entity\Admin;
 use Polonairs\Dialtime\ModelBundle\Entity\Phone;
 use Polonairs\Dialtime\ModelBundle\Entity\Account;
 use Polonairs\Dialtime\ModelBundle\Entity\Auth;	
@@ -99,7 +100,8 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$auth = (new Auth())
 				->setType(Auth::TYPE_REGISTRATION)
 				->setUser($user)
-				->setIp($ip);
+				->setIp($ip)
+				->setCabinet(Auth::CABINET_MASTER);
 
     		$em->persist($schedule);
 			$em->persist($user);
@@ -107,6 +109,7 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$em->persist($phone);
 			$em->persist($account);
 			$em->persist($rate);
+			$em->persist($auth);
 
 			$em->flush();
 			$em->getConnection()->commit();
@@ -152,13 +155,15 @@ class UserService extends DefaultAuthenticationSuccessHandler
 			$auth = (new Auth())
 				->setType(Auth::TYPE_REGISTRATION)
 				->setUser($user)
-				->setIp($ip);
+				->setIp($ip)
+				->setCabinet(Auth::CABINET_PARTNER);
 
 			$em->persist($user);
 			$em->persist($partner);
 			$em->persist($phone);
 			$em->persist($account);
 			$em->persist($rate);
+			$em->persist($auth);
 
 			$em->flush();
 			$em->getConnection()->commit();
@@ -199,11 +204,16 @@ class UserService extends DefaultAuthenticationSuccessHandler
 	            ->setAmount(100.0);
 	        $em->persist($entry_m);
         }
-        $em->persist(
-        	(new Auth())
+        $auth = (new Auth())
         	->setType(Auth::TYPE_LOGIN)
         	->setUser($user->getUser())
-        	->setIp($request->getClientIp()));
+        	->setIp($request->getClientIp());
+
+        if ($user instanceof Admin) $auth->setCabinet(Auth::CABINET_ADMIN);
+        elseif ($user instanceof Master) $auth->setCabinet(Auth::CABINET_MASTER);
+        elseif ($user instanceof Partner) $auth->setCabinet(Auth::CABINET_PARTNER);
+
+        $em->persist($auth);
         $em->flush();
         if ($transaction !== null)
         {
