@@ -4,11 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="dialtime.common.user" class="Polonairs\Dialtime\CommonBundle\Service\UserService\UserService">
+        <!-- service id="dialtime.common.user" class="Polonairs\Dialtime\CommonBundle\Service\UserService\UserService">
             <argument type="service" id="doctrine" />
             <argument type="service" id="security.password_encoder" />
             <argument type="service" id="security.http_utils" />
-        </service>
+        </service -->
         <service id="dialtime.common.settings" class="Polonairs\Dialtime\CommonBundle\Service\SystemSettingsService">
             <argument type="service" id="doctrine" />
         </service>
