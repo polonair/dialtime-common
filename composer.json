@@ -11,7 +11,7 @@
     {
         "erusev/parsedown": "^1.6",
         "dialtime/dialtime": "0.1.1",
-        "dialtime/model": "0.1.16",
+        "dialtime/model": "0.1.17",
         "polonair/smsi": "0.1.5"
     }
 }
